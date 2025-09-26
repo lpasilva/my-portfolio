@@ -1,4 +1,3 @@
-import React from "react";
 import { Wrench, Clock, ArrowRight } from "lucide-react";
 
 function App() {
