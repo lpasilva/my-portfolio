@@ -53,7 +53,7 @@ const App: React.FC = () => {
 return (
   <div className="fixed inset-0 bg-black text-white overflow-auto">
     {/* Force-center container (fixed + transform) */}
-    <div className="absolute left-1/2 top-[80%] transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl px-6">
+    <div className="absolute left-1/2 lg:top-[80%] top-[50%] transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl px-6">
       {/* Background orbs (kept but outside of flow) */}
       <div className="pointer-events-none">
         <div className="absolute top-10 left-5 w-48 h-48 md:w-96 md:h-96 bg-white opacity-10 rounded-full blur-3xl animate-pulse"
