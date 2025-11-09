@@ -1,83 +1,140 @@
-import { Wrench, Clock, ArrowRight } from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { Code, Github, Linkedin, Mail, ArrowRight } from 'lucide-react';
 
-function App() {
-  return (
-    <div className="h-screen w-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-cyan-900 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Animated background elements */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-        <div className="absolute top-1/2 right-1/3 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl animate-pulse delay-500"></div>
+const App: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [displayText, setDisplayText] = useState('');
+  const [cursorVisible, setCursorVisible] = useState(true);
+
+  const fullText = 'console.log("Coming Soon...");';
+
+  // Typing animation effect
+  useEffect(() => {
+    let index = 0;
+    const typingInterval = setInterval(() => {
+      if (index <= fullText.length) {
+        setDisplayText(fullText.slice(0, index));
+        index++;
+      } else {
+        clearInterval(typingInterval);
+      }
+    }, 80);
+
+    return () => clearInterval(typingInterval);
+  }, []);
+
+  // Cursor blink effect
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setCursorVisible(prev => !prev);
+    }, 500);
+
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  const handleSubmit = () => {
+    if (email && email.includes('@')) {
+      setIsSubmitted(true);
+      setTimeout(() => {
+        setIsSubmitted(false);
+        setEmail('');
+      }, 3000);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+  
+
+return (
+  <div className="fixed inset-0 bg-black text-white overflow-auto">
+    {/* Force-center container (fixed + transform) */}
+    <div className="absolute left-1/2 top-[80%] transform -translate-x-1/2 -translate-y-1/2 w-full max-w-3xl px-6">
+      {/* Background orbs (kept but outside of flow) */}
+      <div className="pointer-events-none">
+        <div className="absolute top-10 left-5 w-48 h-48 md:w-96 md:h-96 bg-white opacity-10 rounded-full blur-3xl animate-pulse"
+             style={{ animationDuration: '5s' }} />
+        <div className="absolute bottom-10 right-5 w-40 h-40 md:w-80 md:h-80 bg-white opacity-10 rounded-full blur-3xl animate-pulse"
+             style={{ animationDuration: '7s', animationDelay: '1s' }} />
+        <div className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-32 h-32 md:w-64 md:h-64 bg-white opacity-5 rounded-full blur-3xl animate-pulse"
+             style={{ animationDuration: '6s', animationDelay: '2s' }} />
       </div>
 
-      {/* Main content */}
-      <div className="relative z-10 text-center max-w-2xl mx-auto">
-        {/* Icon container with glow effect */}
-        <div className="relative mb-8">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-24 h-24 bg-emerald-400/20 rounded-full blur-xl animate-pulse"></div>
-          </div>
-          <div className="relative flex justify-center">
-            <div className="p-6 bg-white/10 backdrop-blur-sm rounded-full border border-white/20 shadow-2xl">
-              <Wrench className="w-12 h-12 text-emerald-400 animate-spin" style={{
-                animation: 'spin 3s linear infinite'
-              }} />
-            </div>
+      {/* Centered content */}
+      <div className="relative z-10 flex flex-col items-center text-center">
+        {/* Logo */}
+        <div className="mb-8 md:mb-12 transform hover:scale-110 transition-transform duration-300">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 border-2 border-white flex items-center justify-center group hover:bg-white transition-all duration-500 rotate-45">
+            <Code className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 group-hover:text-black transition-colors -rotate-45" />
           </div>
         </div>
 
-        {/* Main heading */}
-        <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
-          Under
-          <span className="block bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 bg-clip-text text-transparent">
-            Maintenance
-          </span>
-        </h1>
+        {/* Heading */}
+        <div className="w-full mb-10">
+          <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-white via-gray-400 to-white bg-clip-text text-transparent leading-tight mb-6">
+            COMING SOON
+          </h1>
 
-        {/* Subtitle */}
-        <p className="text-xl text-gray-300 mb-8 leading-relaxed max-w-lg mx-auto">
-          We're working behind the scenes to bring you something amazing. 
-          Your patience is appreciated while we make improvements.
-        </p>
-
-        {/* Status indicators */}
-        <div className="flex items-center justify-center gap-8 mb-8">
-          <div className="flex items-center gap-2 text-gray-400">
-            <Clock className="w-5 h-5" />
-            <span className="text-sm">Est. 2-4 days</span>
+          <div className="font-mono text-green-400 text-base md:text-xl mb-6 break-words">
+            {displayText}
+            <span className={`${cursorVisible ? 'opacity-100' : 'opacity-0'}`}>|</span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-            <span className="text-sm text-gray-400">Systems updating</span>
+
+          <p className="text-lg md:text-2xl text-white mb-2 font-light">Crafting Digital Excellence</p>
+          <p className="text-sm md:text-lg text-gray-400 font-light">Software Engineering Student · Innovator · Creator</p>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-full mb-10">
+          <div className="h-1.5 md:h-2 bg-white/10 rounded-full overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-white to-gray-400 animate-pulse" style={{ width: '70%' }} />
+          </div>
+          <div className="flex justify-between mt-2 text-xs sm:text-sm text-gray-500 font-mono">
+            <span>Launching Soon</span>
+            <span>70% Ready</span>
           </div>
         </div>
 
-        {/* Call to action */}
-        <div className="space-y-4">
-          <button className="group inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-full font-medium transition-all duration-300 hover:scale-105 hover:shadow-xl hover:shadow-emerald-500/25">
-            <span>Get Notified When Ready</span>
-            <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-          </button>
-          
-          <p className="text-sm text-gray-500">
-            Follow us for updates or check back soon
-          </p>
+        {/* Email */}
+        <div className="w-full mb-10">
+          <p className="text-gray-300 mb-4 text-base sm:text-lg">Get notified when we go live</p>
+          <div className="flex flex-col gap-3 backdrop-blur-sm bg-white/5 p-3 border border-white/10">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Enter your email address"
+              className="w-full px-4 py-3 bg-black/50 border border-white/20 text-white placeholder-gray-500 focus:outline-none focus:border-white transition-all text-sm sm:text-base"
+            />
+            <button
+              onClick={handleSubmit}
+              className="w-full sm:w-auto px-8 py-3 bg-white text-black font-bold hover:bg-gray-200 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-2 group text-sm sm:text-base"
+            >
+              {isSubmitted ? <> <span>Subscribed!</span><span className="text-lg sm:text-xl">✓</span> </>
+                           : <> <span>NOTIFY ME</span><ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" /> </>}
+            </button>
+          </div>
         </div>
 
-        {/* Footer */}
-        <div className="mt-16 pt-8 border-t border-white/10">
-          <p className="text-sm text-gray-500">
-            Powered by React + Tailwind CSS
-          </p>
+        {/* Social links */}
+        <div className="flex justify-center gap-5 mb-6">
+          <a href="#" className="w-12 h-12 border-2 border-white/30 hover:border-white hover:bg-white hover:text-black flex items-center justify-center rounded transition-all transform hover:scale-110"><Github className="w-5 h-5" /></a>
+          <a href="#" className="w-12 h-12 border-2 border-white/30 hover:border-white hover:bg-white hover:text-black flex items-center justify-center rounded transition-all transform hover:scale-110"><Linkedin className="w-5 h-5" /></a>
+          <a href="#" className="w-12 h-12 border-2 border-white/30 hover:border-white hover:bg-white hover:text-black flex items-center justify-center rounded transition-all transform hover:scale-110"><Mail className="w-5 h-5" /></a>
         </div>
+
+        <p className="text-gray-500 text-xs sm:text-sm font-light">© 2025 · Designed with passion</p>
       </div>
-
-      {/* Additional floating elements */}
-      <div className="absolute top-20 left-10 w-2 h-2 bg-white/30 rounded-full animate-ping"></div>
-      <div className="absolute bottom-32 left-20 w-1 h-1 bg-teal-400/50 rounded-full animate-ping delay-700"></div>
-      <div className="absolute top-40 right-16 w-1.5 h-1.5 bg-cyan-400/40 rounded-full animate-ping delay-300"></div>
     </div>
-  );
-}
+  </div>
+);
+
+
+};
 
 export default App;
